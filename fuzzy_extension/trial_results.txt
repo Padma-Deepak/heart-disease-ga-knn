@@ -1,0 +1,51 @@
+FUZZY KNN EXTENSION: COMPLETED EXPERIMENT
+
+Exploratory comparison on the exact same ten outer splits as the original experiment.
+918 unique rows; 734 train / 184 test per split; inner five-fold CV.
+Original report and original results were preserved.
+
+RESULTS (means across ten splits)
+Model | Accuracy (%) | SD (percentage points) | Precision (%) | Recall (%) | F1 | ROC-AUC
+KNN | 85.22 | 1.73 | 85.49 | 88.43 | 0.8688 | 0.9024
+GA_KNN | 86.79 | 1.49 | 87.15 | 89.51 | 0.8826 | 0.9223
+Fuzzy_KNN | 84.95 | 2.07 | 85.79 | 87.45 | 0.8655 | 0.9171
+GA_Fuzzy_KNN | 85.76 | 2.17 | 86.73 | 87.94 | 0.8726 | 0.9238
+Grid_Fuzzy_KNN | 85.98 | 2.27 | 86.71 | 88.43 | 0.8749 | 0.9238
+
+CONCLUSION
+GA-Fuzzy-KNN improves mean accuracy over fixed KNN by 0.54 percentage points, but is 1.03 percentage points below the existing GA-KNN. Its mean ROC-AUC is marginally higher (0.9238 versus 0.9223). It does not improve the existing best mean accuracy or F1.
+
+GA-Fuzzy-KNN versus existing GA-KNN: 1 win, 3 ties, 6 losses.
+GA-Fuzzy-KNN versus fixed KNN: 6 wins, 1 tie, 3 losses.
+
+The exhaustive fuzzy grid control achieved 85.98% mean accuracy, also below GA-KNN. All GA choices matched the best inner-CV score, but some tied configurations differed from grid search and produced different held-out predictions. No test result was used to choose between tied configurations.
+
+METHOD
+Exploratory extension using the exact original ten outer splits, already inspected in earlier work. StandardScaler and training fuzzy memberships are refitted inside every inner-CV training fold. Initialization k=5 excluding self, U=.51*onehot(y)+.49*neighbour frequencies. Query weighting d**(-2/(m-1)), normalized in log space, zero-distance memberships averaged. k=1..51, three distances, fuzziness in [1.5,2,2.5,3,4]; fixed fuzzy baseline k5/Euclidean/m2. GA pop50/gen100/tournament3/crossover.8/mutation.1/one elite. Grid control spans all 765 candidates and never changes GA choice. Training-fold distance geometry is reused to accelerate scoring; verified against independent pipeline CV for two predetermined configurations on every split. Hard class ties favour 0. Same numeric categories and retained zeros as the original experiment. Not a 2025 paper replication and not a fresh confirmatory test.
+
+Membership scores are fuzzy degrees, not calibrated clinical probabilities. This fuzzy method extends the earlier project; it is not a fuzzy method reported in the selected 2025 paper.
+
+SOURCE
+https://doi.org/10.1109/TSMC.1985.6313426
+
+PER-SPLIT TEST ACCURACY
+Seed | KNN | GA-KNN | Fuzzy-KNN | GA-Fuzzy-KNN | Selected fuzzy configuration
+0 | 84.24 | 86.96 | 83.70 | 86.41 | k=10, manhattan, m=3.0
+1 | 85.33 | 84.78 | 84.78 | 84.78 | k=23, manhattan, m=4.0
+2 | 86.41 | 87.50 | 86.96 | 87.50 | k=17, manhattan, m=3.0
+3 | 84.78 | 85.87 | 84.78 | 83.70 | k=22, manhattan, m=2.0
+4 | 81.52 | 85.33 | 80.98 | 82.61 | k=4, euclidean, m=2.0
+5 | 84.24 | 85.33 | 83.15 | 85.33 | k=10, manhattan, m=4.0
+6 | 85.33 | 86.96 | 84.78 | 83.70 | k=5, manhattan, m=1.5
+7 | 85.87 | 87.50 | 85.33 | 85.87 | k=50, manhattan, m=1.5
+8 | 86.41 | 88.04 | 86.96 | 88.59 | k=9, manhattan, m=3.0
+9 | 88.04 | 89.67 | 88.04 | 89.13 | k=10, manhattan, m=2.5
+
+VERIFICATION
+Hand-calculated membership initialization and query scores passed. Accelerated CV scores matched independently fitted pipelines for two fixed configurations in each split. All saved fuzzy predictions, membership sums, metrics, original split indices and source fingerprints passed audit.
+
+REPRODUCE
+Install ../requirements.txt in a Python 3.12 environment.
+Run: python run_fuzzy_comparison.py
+Audit: python verify_fuzzy.py
+Keep these scripts in fuzzy_extension/ beside the parent dataset and original results.json.

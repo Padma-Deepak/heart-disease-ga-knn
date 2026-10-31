@@ -1,0 +1,39 @@
+name: Verify experiments
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      MPLBACKEND: Agg
+      MPLCONFIGDIR: /tmp/heart-disease-matplotlib
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Verify supplied results
+        run: |
+          python verify_results.py
+          python fuzzy_extension/verify_fuzzy.py
+      - name: Repeat main experiment
+        run: |
+          python run_comparison.py
+          python verify_results.py
+          python generate_figures.py
+      - name: Repeat fuzzy extension
+        run: |
+          python fuzzy_extension/run_fuzzy_comparison.py
+          python fuzzy_extension/verify_fuzzy.py

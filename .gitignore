@@ -1,0 +1,27 @@
+# Local environments and Python build files
+.venv/
+venv/
+work/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Local application and plot caches
+.DS_Store
+.matplotlib-cache/
+.ipynb_checkpoints/
+.idea/
+.vscode/
+
+# Local reruns and downloadable bundles
+rerun/
+*.zip
+*.log
+
+# Local credentials and environment files
+.env
+.env.*
+!.env.example
+*.pem
+*.key

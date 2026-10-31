@@ -1,0 +1,9 @@
+Completed experiment; see Mini_Project_Report.md for full methodology and discussion.
+
+Mean accuracy: Standard KNN 85.22%; GA-KNN 86.79%; random search 86.63%; grid search 86.79%.
+GA-KNN wins on 9 of 10 splits. All previous predictive results are unchanged.
+Mean total development time (search + final fit):
+KNN: 0.001033 seconds
+GA_KNN: 1.576635 seconds
+RandomSearch_KNN: 0.853597 seconds
+GridSearch_KNN: 2.604071 seconds
